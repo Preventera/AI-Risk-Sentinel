@@ -1,0 +1,183 @@
+version: "3.9"
+
+services:
+  # =============================================================================
+  # PostgreSQL Database with pgvector extension
+  # =============================================================================
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: ars-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ars_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ars_password}
+      POSTGRES_DB: ${POSTGRES_DB:-ai_risk_sentinel}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ars_user} -d ${POSTGRES_DB:-ai_risk_sentinel}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ars-network
+
+  # =============================================================================
+  # Redis for caching and task queue
+  # =============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: ars-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ars-network
+
+  # =============================================================================
+  # FastAPI Backend
+  # =============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    container_name: ars-api
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-ars_user}:${POSTGRES_PASSWORD:-ars_password}@db:5432/${POSTGRES_DB:-ai_risk_sentinel}
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - HF_TOKEN=${HF_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    volumes:
+      - ./src:/app/src:ro
+      - ./data:/app/data:ro
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - ars-network
+
+  # =============================================================================
+  # Celery Worker for background tasks
+  # =============================================================================
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: worker
+    container_name: ars-worker
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-ars_user}:${POSTGRES_PASSWORD:-ars_password}@db:5432/${POSTGRES_DB:-ai_risk_sentinel}
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - HF_TOKEN=${HF_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./src:/app/src:ro
+      - ./data:/app/data:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ars-network
+
+  # =============================================================================
+  # Celery Beat Scheduler (for periodic tasks)
+  # =============================================================================
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: scheduler
+    container_name: ars-scheduler
+    restart: unless-stopped
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    depends_on:
+      - worker
+      - redis
+    networks:
+      - ars-network
+
+  # =============================================================================
+  # React Frontend Dashboard
+  # =============================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ars-frontend
+    restart: unless-stopped
+    environment:
+      - REACT_APP_API_URL=http://localhost:${API_PORT:-8000}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - api
+    networks:
+      - ars-network
+
+  # =============================================================================
+  # Adminer (Database GUI - Development only)
+  # =============================================================================
+  adminer:
+    image: adminer:latest
+    container_name: ars-adminer
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    depends_on:
+      - db
+    profiles:
+      - dev
+    networks:
+      - ars-network
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  ars-network:
+    driver: bridge
+    name: ai-risk-sentinel-network
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+    name: ars-postgres-data
+  redis_data:
+    name: ars-redis-data

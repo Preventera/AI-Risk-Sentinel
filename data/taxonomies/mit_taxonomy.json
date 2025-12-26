@@ -1,0 +1,257 @@
+{
+  "name": "MIT AI Risk Repository Taxonomy",
+  "version": "1.0",
+  "source": "https://airisk.mit.edu/",
+  "reference": "Slattery et al. (2024)",
+  "categories": [
+    {
+      "id": "discrimination_toxicity",
+      "name": "Discrimination & Toxicity",
+      "description": "Risks related to unfair treatment, bias, and harmful content generation",
+      "subcategories": [
+        {
+          "id": "unfair_discrimination_misrepresentation",
+          "name": "Unfair Discrimination and Misrepresentation",
+          "description": "AI systems that treat individuals or groups unfairly based on protected characteristics",
+          "examples": [
+            "Biased hiring algorithms",
+            "Discriminatory credit scoring",
+            "Stereotypical image generation"
+          ]
+        },
+        {
+          "id": "exposure_toxic_content",
+          "name": "Exposure to Toxic Content",
+          "description": "Generation or amplification of harmful, offensive, or disturbing content",
+          "examples": [
+            "Hate speech generation",
+            "Violent content creation",
+            "Harassment facilitation"
+          ]
+        },
+        {
+          "id": "unequal_performance_across_groups",
+          "name": "Unequal Performance Across Groups",
+          "description": "AI systems that perform differently for different demographic groups",
+          "examples": [
+            "Lower accuracy for underrepresented groups",
+            "Speech recognition disparities",
+            "Medical diagnosis inequalities"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai_system_safety",
+      "name": "AI System Safety, Failures & Limitations",
+      "description": "Risks from technical failures, limitations, and unsafe behaviors",
+      "subcategories": [
+        {
+          "id": "lack_capability_robustness",
+          "name": "Lack of Capability or Robustness",
+          "description": "AI systems that fail under normal or adversarial conditions",
+          "examples": [
+            "Model crashes on edge cases",
+            "Poor performance on out-of-distribution data",
+            "Vulnerability to adversarial attacks"
+          ]
+        },
+        {
+          "id": "lack_transparency_interpretability",
+          "name": "Lack of Transparency or Interpretability",
+          "description": "AI systems whose decisions cannot be understood or explained",
+          "examples": [
+            "Black-box decision making",
+            "Unexplainable predictions",
+            "Hidden reasoning processes"
+          ]
+        },
+        {
+          "id": "ai_pursuing_own_goals",
+          "name": "AI Pursuing Its Own Goals",
+          "description": "AI systems that develop goals misaligned with human intentions",
+          "examples": [
+            "Reward hacking",
+            "Goal misgeneralization",
+            "Instrumental convergence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "misinformation",
+      "name": "Misinformation",
+      "description": "Risks from false, misleading, or fabricated information",
+      "subcategories": [
+        {
+          "id": "false_misleading_information",
+          "name": "False or Misleading Information",
+          "description": "Generation of factually incorrect content presented as true",
+          "examples": [
+            "Hallucinated facts",
+            "Fabricated citations",
+            "Incorrect medical advice"
+          ]
+        },
+        {
+          "id": "pollution_information_ecosystem",
+          "name": "Pollution of Information Ecosystem",
+          "description": "Degradation of information quality at scale",
+          "examples": [
+            "AI-generated spam",
+            "Synthetic media flooding",
+            "Search result manipulation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "malicious_actors",
+      "name": "Malicious Actors & Misuse",
+      "description": "Risks from intentional harmful use of AI systems",
+      "subcategories": [
+        {
+          "id": "fraud_scams_targeted_manipulation",
+          "name": "Fraud, Scams, and Targeted Manipulation",
+          "description": "Use of AI for deception and financial crimes",
+          "examples": [
+            "Deepfake scams",
+            "Voice cloning fraud",
+            "Personalized phishing"
+          ]
+        },
+        {
+          "id": "disinformation_surveillance_influence",
+          "name": "Disinformation, Surveillance, and Influence at Scale",
+          "description": "Large-scale manipulation of information and behavior",
+          "examples": [
+            "Political disinformation campaigns",
+            "Mass surveillance systems",
+            "Social media manipulation"
+          ]
+        },
+        {
+          "id": "cyberattacks_weapon_development",
+          "name": "Cyberattacks, Weapon Development, and Mass Harm",
+          "description": "AI-enabled attacks and weapons",
+          "examples": [
+            "Automated vulnerability discovery",
+            "Autonomous weapons",
+            "CBRN development assistance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "privacy_security",
+      "name": "Privacy & Security",
+      "description": "Risks to personal data and system security",
+      "subcategories": [
+        {
+          "id": "compromise_privacy_leaking_sensitive_info",
+          "name": "Compromise of Privacy by Leaking Sensitive Information",
+          "description": "Exposure of personal or confidential data",
+          "examples": [
+            "Training data extraction",
+            "PII leakage in outputs",
+            "Membership inference attacks"
+          ]
+        },
+        {
+          "id": "ai_system_security_vulnerabilities",
+          "name": "AI System Security Vulnerabilities and Attacks",
+          "description": "Security weaknesses in AI systems",
+          "examples": [
+            "Prompt injection",
+            "Model poisoning",
+            "Evasion attacks"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "human_computer_interaction",
+      "name": "Human-Computer Interaction",
+      "description": "Risks from how humans interact with AI systems",
+      "subcategories": [
+        {
+          "id": "overreliance_unsafe_use",
+          "name": "Overreliance and Unsafe Use",
+          "description": "Excessive trust in AI systems leading to poor outcomes",
+          "examples": [
+            "Automation complacency",
+            "Skill degradation",
+            "Inappropriate deployment contexts"
+          ]
+        },
+        {
+          "id": "loss_human_agency_autonomy",
+          "name": "Loss of Human Agency and Autonomy",
+          "description": "Reduction in human control and decision-making",
+          "examples": [
+            "Algorithmic decision-making without appeal",
+            "Nudging and manipulation",
+            "Reduced critical thinking"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "socioeconomic_environmental",
+      "name": "Socioeconomic & Environmental Harms",
+      "description": "Broader societal and environmental impacts",
+      "subcategories": [
+        {
+          "id": "power_centralization_unfair_distribution",
+          "name": "Power Centralization and Unfair Distribution of Benefits",
+          "description": "Concentration of AI benefits among few actors",
+          "examples": [
+            "Tech monopolies",
+            "Digital divide widening",
+            "Regulatory capture"
+          ]
+        },
+        {
+          "id": "increased_inequality_employment_decline",
+          "name": "Increased Inequality and Decline in Employment Quality",
+          "description": "Labor market disruptions and economic inequality",
+          "examples": [
+            "Job displacement",
+            "Wage stagnation",
+            "Gig economy expansion"
+          ]
+        },
+        {
+          "id": "economic_cultural_devaluation",
+          "name": "Economic and Cultural Devaluation of Human Effort",
+          "description": "Diminishing value of human work and creativity",
+          "examples": [
+            "Creative work devaluation",
+            "Knowledge worker displacement",
+            "Cultural homogenization"
+          ]
+        },
+        {
+          "id": "environmental_harm",
+          "name": "Environmental Harm",
+          "description": "Negative environmental impacts of AI development and use",
+          "examples": [
+            "Energy consumption",
+            "Carbon emissions",
+            "E-waste generation"
+          ]
+        },
+        {
+          "id": "governance_failure",
+          "name": "Governance Failure",
+          "description": "Inadequate oversight and regulation of AI",
+          "examples": [
+            "Regulatory lag",
+            "Enforcement gaps",
+            "International coordination failures"
+          ]
+        }
+      ]
+    }
+  ]
+}
